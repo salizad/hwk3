@@ -410,58 +410,46 @@ ma.rd1 <- ma_25star %>%
          treat = (score>=0),
          window = (score>=-.125 & score<=.125),
          score_treat=score*treat)
-
-p1 <- ggplot(ma.rd1 %>% filter(window == TRUE), 
-             aes(x = score, y = market_share, color = treat)) +
-  geom_point(alpha = 0.4, size = 1.5) +
-  geom_smooth(method = "lm", se = TRUE) +
+Q8.
+# Assuming 'window1' is the desired condition for filtering
+p1 <- ggplot(ma.rd1 %>% filter(window1 == TRUE), 
+              aes(x = score, fill = treat)) +
+  geom_density(alpha = 0.4) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.8) +
-  scale_color_manual(values = c("FALSE" = "coral", "TRUE" = "steelblue"),
-                     labels = c("2.5 Stars", "3 Stars")) +
-  labs(title = "Comparing 2.5 vs 3 Stars", x = "Running Variable (Score)",
-       y = "Market Share", color = "Rating") +
-  theme_minimal()
+  scale_fill_manual(values = c("FALSE" = "coral", "TRUE" = "steelblue"),
+                    labels = c("2.5 Stars", "3 Stars")) +
+  labs(title = "Density of 2.5 vs 3 Stars", x = "Running Variable (Score)",
+       y = "Density", fill = "Rating") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 10),  # Smaller title
+        axis.title = element_text(size = 8),   # Smaller axis titles
+        legend.title = element_text(size = 8),  # Smaller legend title
+        legend.text = element_text(size = 7))   # Smaller legend text
 
-ma_25star_candidates <- ma.2010 %>%
-  filter(
-    !is.na(raw_rating),
-    !is.na(partc_score),
-    Star_Rating %in% c(3, 3.5)
-  )
+# Display the plot
+print(p1)
 
-n_candidates_total <- nrow(ma_25star_candidates)
-n_candidates_by_score <- ma_25star_candidates %>% count(partc_score)
-
-ma_25star <- ma_25star_candidates %>%
-  filter(
-    raw_rating >= 3,
-    raw_rating <= 3.5,
-    (raw_rating >= 3.25 & Star_Rating == 3.5) | (raw_rating < 3.25 & Star_Rating == 3)
-  )
-
-ma.rd2 <- ma_25star %>%
-  mutate(market_share = avg_enrollment / avg_enrolled,
-         score = raw_rating - 3.25,
-         treat = (score>=0),
-         window = (score>=-.125 & score<=.125),
-         score_treat=score*treat)
-
-p2 <- ggplot(ma.rd2 %>% filter(window == TRUE), 
-             aes(x = score, y = market_share, color = treat)) +
-  geom_point(alpha = 0.4, size = 1.5) +
-  geom_smooth(method = "lm", se = TRUE) +
+# Assuming 'window1' is the desired condition for filtering
+p2 <- ggplot(ma.rd2 %>% filter(window1 == TRUE), 
+              aes(x = score, fill = treat)) +
+  geom_density(alpha = 0.4) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.8) +
-  scale_color_manual(values = c("FALSE" = "coral", "TRUE" = "steelblue"),
-                     labels = c("3 Stars", "3.5 Stars")) +
-  labs(title = "Comparing 3 vs 3.5 Stars", x = "Running Variable (Score)",
-       y = "Market Share", color = "Rating") +
-  theme_minimal()
+  scale_fill_manual(values = c("FALSE" = "coral", "TRUE" = "steelblue"),
+                    labels = c("3 Stars", "3.5 Stars")) +
+  labs(title = "Density of 3 vs 3.5 Stars", x = "Running Variable (Score)",
+       y = "Density", fill = "Rating") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 10),  # Smaller title
+        axis.title = element_text(size = 8),   # Smaller axis titles
+        legend.title = element_text(size = 8),  # Smaller legend title
+        legend.text = element_text(size = 7))   # Smaller legend text
 
-p1
-p2
+# Display the plot
+print(p2)
 
 We observe a sharp increase in market share in relation to values on either side of the threshold, especially noticeable when comparing 2.5-star to 3-star plans (as seen in the first plot). Specifically, there is a decline from -0.10 to -0.05 in the upper plot, along with a slight rise from 0.05 to 0.10 in the lower plot.
 
+Q9.
 summary_df <- data.frame(
   Threshold = c("2.5 vs 3 Stars", "3 vs 3.5 Stars"),
   
